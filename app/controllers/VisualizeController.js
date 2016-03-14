@@ -18,7 +18,7 @@ app.controller('VisualizeController', ['$scope', function ($scope) {
     $scope.max = 0;
     
     // public and private key
-    AWS.config.update({accessKeyId: 'AKIAJ7MSYO556WIESBYA', secretAccessKey: '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'});
+    AWS.config.update({accessKeyId: 'access', secretAccessKey: 'secret'});
     // Configure the region
     AWS.config.region = 'us-west-2';  //us-west-2 is Oregon
     //create the ddb object
