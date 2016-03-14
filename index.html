@@ -2,23 +2,18 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <!-- Favicon -->
-    <link rel="icon" href="assets/img/roadster.png" />
-    <!-- Device Compatibility -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Ken, Kenneth, Bigler, Kenneth Bigler, Ken Bigler, Resume, HTML, CSS, JavaScript, C++, C, Software Developer, Web, Web Developer, Web Technologist, Santa Clara, SCU, scu, Santa Clara University, hours, hour reporting, timecard, time, card">
-    <meta name="description" content="This is an application to help practice using data visualization">
-    <meta name="author" content="Kenneth Bigler">
-    <title>Cards</title>
     <script type="text/javascript">
     [
         'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
         'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js',
         'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
         'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular-route.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/aws-sdk/2.2.43/aws-sdk.min.js',
         'app/app.modules.js',
-        'app/app.routes.js',
-        'app/components/home/HomeController.js'
+        'app/controllers/VisualizeController.js',
+        'app/directives/VisualizeDirective.js',
+        'assets/js/data.js'
     ].forEach(function(src) {
         var script = document.createElement('script');
         script.src = src;
@@ -26,52 +21,60 @@
         document.head.appendChild(script);
     });
     </script>
-    <base href="/casino/" />
+    <title>IoT Data</title>
 </head>
 <!---------------------------------------------------------------------------------------------------->
-<body ng-app="myApp" ng-controller="HomeController">
-<div></div>
-<!-- Bootstrap CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type='text/css' media="all">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" type="text/css" media="all">
-<!-- Google Font -->
-<link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans' type='text/css' media="all">
-<!-- Custom Styles -->
-<link rel="stylesheet" href="assets/css/mystyles.css" type='text/css' media="all">
-<link rel="stylesheet" href="assets/css/mobile.css" type='text/css' media="(max-width: 500px)">
-<!-- Start Body for Real -->
-<div class="container-fluid">
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#/" ng-click="closeNav()">Visualization</a>
+<body ng-app="myApp" ng-controller="VisualizeController">
+    <div></div>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" type='text/css' media="all">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" type="text/css" media="all">
+    <!-- Google Font -->
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Open+Sans' type='text/css' media="all">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/mystyles.css" type='text/css' media="all">
+    
+    <!-- Start Body for Real -->
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="navbar navbar-inverse">
+                <a class="navbar-brand">Data Visualization</a>
+            </nav>
+            <div class="col-sm-12">
+                <!--svg line chart-->
+                <h2>IoT CO<sub>2</sub> Data</h2>
+                <div class="chart" style="width:{{ width }}px; height:{{ height }}px;">
+                    <div class="y" style="width: {{ height }}px;">{{ yAxis }}</div>
+                    <div class="x">{{ xAxis }}</div>
+                    <svg style="width:{{width}}px; height:{{height}}px;">
+                        <line ng-repeat="line in data track by $index"
+                              ng-xa="{{ $index / data.length * width }}"
+                              ng-ya="{{ data[$index - 1] / max * height }}"
+                              ng-xb="{{ ($index + 1) / data.length * width }}"
+                              ng-yb="{{ line / max * height }}"
+                              style="stroke: red">
+                        </line>
+                    </svg>
+                </div>
+                <!--<table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Week</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="m in data track by $index">
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ m }}</td>
+                        </tr>
+                    </tbody>
+                </table>-->
             </div>
-            <!-- Menu -->
-            <div id="navbar" class="navbar-collapse collapse navbar-right navbar-nav">
-                <ul class="nav navbar-nav">
-                    <li ng-class="getClass('/')"><a href="#/" ng-click="closeNav()">Home</a></li>
-                </ul>
-            </div><!-- /Menu -->
         </div>
-    </nav><!-- /Navigation -->
-    <!-- Content loaded via Angular -->
-    <div ng-view></div>
-</div><!-- /container -->
+    </div><!-- /container -->
 </body>
 <div ng-if="false">
     <h1>Loading the application, please hold on...</h1>
 </div>
 </html>
-<!--
-Update MVC:
-    https://www.airpair.com/angularjs/posts/top-10-mistakes-angularjs-developers-make
-Create Cards:
-    https://github.com/selfthinker/CSS-Playing-Cards/blob/master/cards.css
--->
